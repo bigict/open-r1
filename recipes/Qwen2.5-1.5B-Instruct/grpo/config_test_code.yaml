@@ -1,0 +1,59 @@
+# Model arguments
+model_name_or_path: Qwen/Qwen2.5-1.5B-Instruct
+#model_name_or_path: deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+
+# Data training arguments
+#dataset_name: open-r1/verifiable-coding-problems-python
+#dataset_name: /root/open-r1/src/open_r1/TACO
+dataset_name: BAAI/TACO
+#dataset_split: train
+#system_prompt: "You are a helpful AI Assistant that provides well-reasoned and detailed responses. You first think about the reasoning process as an internal monologue and then provide the user with the answer. Respond in the following format: <think>\n...\n</think>\n<answer>\n...\n</answer>"
+system_prompt: "You are a professional AI programming assistant who specializes in solving competitive programming problems. When you encounter a problem, you should analyze the problem statement in depth, clarify the key requirements, constraints, and possible edge cases, and ensure that you have a comprehensive and accurate understanding of the problem. Then think about multiple possible solutions, analyze their respective time complexity, space complexity, and implementation difficulty, choose the algorithm and data structure that best suits the problem, and think about how to avoid potential pitfalls. Then use Python to write clear, efficient, and well-structured code. The code should contain appropriate comments to explain the key logic and steps so that others can easily understand your ideas. Finally, check the correctness of the code by testing sample inputs and edge cases to ensure that your solution can handle all possible situations and has good robustness. Please organize your answer in the following format: <think>...</think><answer>...</answer>. In the <think> section, describe in detail your analysis of the problem, your thinking process for selecting the algorithm, and your considerations for code writing. In the <answer> section, provide a complete Python code solution."
+
+# GRPO trainer config
+beta: 0.01
+bf16: true
+use_vllm: true
+vllm_device: "cuda:6" 
+vllm_tensor_parallel_size: 2
+vllm_gpu_memory_utilization: 0.5
+do_eval: false
+gradient_accumulation_steps: 4
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+hub_model_id: Qwen2.5-1.5B-Open-R1-Code-GRPO
+hub_strategy: every_save
+learning_rate: 5.0e-06
+log_completions: true
+log_level: info
+logging_first_step: true
+logging_steps: 1
+logging_strategy: steps
+lr_scheduler_type: cosine_with_min_lr
+lr_scheduler_kwargs:
+  min_lr_rate: 0.1
+max_prompt_length: 256
+max_completion_length: 4096
+max_steps: 50
+num_generations: 2
+num_train_epochs: 1
+output_dir: data/Qwen2.5-1.5B-Open-R1-Code-GRPO
+overwrite_output_dir: true
+per_device_train_batch_size: 2
+push_to_hub: true
+report_to:
+- wandb
+reward_funcs:
+- format
+reward_weights:
+- 0.1
+save_strategy: "steps"
+save_steps: 50
+save_total_limit: 1
+seed: 42
+temperature: 1.0
+warmup_ratio: 0.03
